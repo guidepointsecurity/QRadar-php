@@ -1,0 +1,27 @@
+{
+	"name": "guidepointsecurity/qradar",
+	"description": "IBM QRadar PHP API",
+	"keywords": ["qradar", "ibm", "security"],
+	"homepage": "https://github.com/guidepointsecurity/QRadar-php",
+	"type": "library",
+	"license": "MIT",
+	"authors": [
+		{
+			"name": "Casey Dunham",
+			"email": "casey.dunham@guidepointsecurity.com",
+			"homepage": "https://www.guidepointsecurity.com"
+		}
+	],
+	"require": {
+		"guzzlehttp/guzzle": "3.8.1"
+	},
+	"require-dev": {
+        "phpunit/phpunit": "4.6.*",
+        "satooshi/php-coveralls": "dev-master"
+    },
+	"autoload": {
+		"psr-0": {
+			"Application": "src/"
+		}
+	}
+}

@@ -1,0 +1,10 @@
+_site
+.gh_pages
+.idea
+*.phar
+build
+composer.lock
+phpunit.xml
+vendor/
+*.sw?
+*.old
