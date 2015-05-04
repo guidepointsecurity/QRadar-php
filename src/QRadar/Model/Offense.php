@@ -39,7 +39,7 @@ namespace QRadar\Model;
 */
 class Offense {
 
-	private $raw;
+    private $raw;
 
     /**
      * @ignore
