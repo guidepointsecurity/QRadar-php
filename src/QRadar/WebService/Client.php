@@ -38,4 +38,15 @@ class Client {
 		}
 		return $offense_instances;
 	}
+
+	public function getOffenseDetail($offense_id) {
+		$client = $this->guzzleClient ? $this->guzzleClient : new GuzzleClient();
+		$url = "siem/offenses/$offense_id";
+		$request = $client->get($url, array('Accept' => 'application/json'));
+		$response = $request->send();
+		$response_object = $response->json();		
+		$class = "QRadar\\Model\\Offense";
+		$offense = new $class($response_object);			
+		return $offense;	
+	}
 }
