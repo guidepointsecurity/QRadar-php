@@ -49,27 +49,14 @@ class ClientTest extends \PHPUnit_Framework_TestCase {
                 'id' => 2
                 )
             );
-
-        $headers = array();
-        $headers['Content-Type'] = 'application/json';
-
-        $body = json_encode($offenses);
-        $status = 200;
-        $response = new Response($status, $headers, $body);
-
-        $plugin = new MockPlugin();
-        $plugin->addResponse($response);
-
-        $guzzleClient = new GuzzleClient();
-        $guzzleClient->addSubscriber($plugin);
-
-        $client = new Client($guzzleClient);
+        
+        $response = $this->response($offenses);
+        $client = $this->client($response);
         
         $offenses = $client->getOffenses();
 
         $this->assertCount(2, $offenses);
         $this->assertInstanceOf('QRadar\Model\Offense', $offenses[0]);
-
         $this->assertEquals(1, $offenses[0]->id);
     }
 
@@ -106,15 +93,18 @@ class ClientTest extends \PHPUnit_Framework_TestCase {
             'start_time' => 0,
             'status' => 'open',
             'username_count' => 0
-            );
+            );        
         
-        $headers = array();
-        $headers['Content-Type'] = 'application/json';
+        $response = $this->response($offense_detail);
+        $client = $this->client($response);
+        
+        $offense = $client->getOffenseDetail(1);
 
-        $body = json_encode($offense_detail);
-        $status = 200;
-        $response = new Response($status, $headers, $body);
+        $this->assertInstanceOf('QRadar\Model\Offense', $offense);
+        $this->assertEquals(1, $offense->id);
+    }
 
+    private function client($response) {
         $plugin = new MockPlugin();
         $plugin->addResponse($response);
 
@@ -122,11 +112,14 @@ class ClientTest extends \PHPUnit_Framework_TestCase {
         $guzzleClient->addSubscriber($plugin);
 
         $client = new Client($guzzleClient);
-        
-        $offense = $client->getOffenseDetail(1);
+        return $client;   
+    }
 
-        $this->assertInstanceOf('QRadar\Model\Offense', $offense);
-        $this->assertEquals(1, $offense->id);
+    private function response($body) {
+        $headers = array();
+        $headers['Content-Type'] = 'application/json';        
+        $status = 200;
+        return new Response($status, $headers, json_encode($body));   
     }
 
     public function testTest() {
