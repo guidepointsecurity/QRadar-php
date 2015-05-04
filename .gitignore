@@ -8,3 +8,4 @@ phpunit.xml
 vendor/
 *.sw?
 *.old
+.DS_Store
