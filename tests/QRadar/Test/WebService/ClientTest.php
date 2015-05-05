@@ -62,6 +62,24 @@ class ClientTest extends \PHPUnit_Framework_TestCase {
         $this->assertEquals(1, $offenses[0]->id);
     }
 
+    public function testUserCanSetCustomizedGuzzleClientAfterClientIsCreated() {
+        // create a client as we normally would
+        $client = new Client('localhost', $this->testToken);
+
+        // retrieve the internal Guzzle client and modify it
+        $guzzleClient = $client->getClient();
+        $patchedClient = $guzzleClient->setDefaultOption('my_option', 'abc123');
+
+        // update our qradar client with the modified guzzle client
+        $client->setClient($patchedClient);
+
+        // retrieve the internal guzzle client again (this should contain our modifications)
+        $guzzleClient = $client->getClient();
+        $my_option = $guzzleClient->getDefaultOption('my_option');
+
+        $this->assertEquals('abc123', $my_option);
+    }
+
     public function testHasCorrectOffenseUri() {
         $response = $this->response(array());
         $plugin = new MockPlugin();

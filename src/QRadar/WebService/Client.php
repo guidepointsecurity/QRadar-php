@@ -71,6 +71,15 @@ class Client {
         return $client;
     }
 
+    /**
+     * Set's the internal Guzzle client used by the QRadar Client for future requests.
+     * 
+     * @param Guzzle\Http\Client $client modified Guzzle\Http\Client 
+     */
+    public function setClient($guzzleClient) {
+        $this->guzzleClient = $guzzleClient;
+    }
+
     private function baseUri() {
         return 'https://' . $this->host . '/api';
     }
