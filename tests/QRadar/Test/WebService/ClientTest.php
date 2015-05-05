@@ -132,7 +132,14 @@ class ClientTest extends \PHPUnit_Framework_TestCase {
                 
         $this->assertTrue($guzzleClient->get('/')->hasHeader('allow-experimental'));                
         $header = $guzzleClient->get('/')->getHeader('allow-experimental');
-        $this->assertTrue($header->hasValue('true'));   
+        $values = $header->toArray();
+
+        // For the allow-experimental header to work, the value MUST be a string
+        // and not a boolean value. If this is not set properly, a bunch of
+        // endpoints will return a 404.
+        $experimental_value = $values[0];
+        $this->assertTrue(is_string($experimental_value));
+        $this->assertEquals('true', $experimental_value);
     }
 
     public function testClientSetsVersionHeader() {

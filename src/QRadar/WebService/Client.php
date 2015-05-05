@@ -64,7 +64,7 @@ class Client {
         $default_headers = array(
             'Accept' => 'application/json',
             'Version' => '3.0',
-            'Allow-Experimental' => true, 
+            'Allow-Experimental' => 'true', 
             'SEC' => $this->token
         );
         $client->setDefaultHeaders($default_headers);
