@@ -56,7 +56,9 @@ class Client {
     public function getClient() {
         $client = $this->guzzleClient ? $this->guzzleClient : new GuzzleClient();
         $default_headers = array(
-            'Accept' => 'application/json', 
+            'Accept' => 'application/json',
+            'Version' => '3.0',
+            'Allow-Experimental' => true, 
             'SEC' => $this->token
         );
         $client->setDefaultHeaders($default_headers);

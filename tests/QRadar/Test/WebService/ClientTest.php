@@ -74,6 +74,28 @@ class ClientTest extends \PHPUnit_Framework_TestCase {
         $this->assertEquals($this->testToken, $sec_header);
     }
 
+    public function testClientSetsExperimentalHeader() {
+        $response = $this->response(array());
+        $client = $this->client($response);
+        
+        $guzzleClient = $client->getClient();
+                
+        $this->assertTrue($guzzleClient->get('/')->hasHeader('allow-experimental'));                
+        $header = $guzzleClient->get('/')->getHeader('allow-experimental');
+        $this->assertTrue($header->hasValue('true'));   
+    }
+
+    public function testClientSetsVersionHeader() {
+        $response = $this->response(array());
+        $client = $this->client($response);
+        
+        $guzzleClient = $client->getClient();
+                
+        $this->assertTrue($guzzleClient->get('/')->hasHeader('version'));                
+        $header = $guzzleClient->get('/')->getHeader('version');
+        $this->assertTrue($header->hasValue('3.0'));   
+    }
+
     public function testGetOffenseDetail() {
         $offense_detail = array(
             'id' => 1,
