@@ -9,16 +9,19 @@ use Guzzle\Http\Exception\ServerErrorResponseException;
 
 class Client {
 
+    private $host;
     private $token;
     private $guzzleClient;
 
     /**
     * Constructor.
     *
+    * @param string $host Hostname for API
     * @param string $token QRadar API Token to use
     * @param object $guzzleClient Optional Guzzle Client to use (for unit testing)
     */
-    public function __construct($token = null, $guzzleClient = null) {
+    public function __construct($host, $token = null, $guzzleClient = null) {
+        $this->host = $host;
         $this->token = $token;
         $this->guzzleClient = $guzzleClient;
     }
@@ -29,8 +32,10 @@ class Client {
     * @return array \QRadar\Model\Offense
     */
     public function getOffenses() {
+        $uri = implode('/', array($this->baseUri(), 'siem', 'offenses'));
+        
         $client = $this->getClient();
-        $request = $client->get('siem/offenses');
+        $request = $client->get($uri);
         $response = $request->send();
         $response_objects = $response->json();      
         $offense_instances = array();
@@ -43,9 +48,10 @@ class Client {
     }
 
     public function getOffenseDetail($offense_id) {
-        $client = $this->getClient();
-        $url = "siem/offenses/$offense_id";
-        $request = $client->get($url);
+        $uri = implode('/', array($this->baseUri(), 'siem', 'offenses', $offense_id));
+
+        $client = $this->getClient();        
+        $request = $client->get($uri);
         $response = $request->send();
         $response_object = $response->json();       
         $class = "QRadar\\Model\\Offense";
@@ -63,5 +69,9 @@ class Client {
         );
         $client->setDefaultHeaders($default_headers);
         return $client;
+    }
+
+    private function baseUri() {
+        return 'https://' . $this->host . '/api';
     }
 }

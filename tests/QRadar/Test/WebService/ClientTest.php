@@ -62,6 +62,56 @@ class ClientTest extends \PHPUnit_Framework_TestCase {
         $this->assertEquals(1, $offenses[0]->id);
     }
 
+    public function testHasCorrectOffenseUri() {
+        $response = $this->response(array());
+        $plugin = new MockPlugin();
+        $plugin->addResponse($response);
+
+        $guzzleClient = new GuzzleClient();
+        $guzzleClient->addSubscriber($plugin);
+
+        $client = new Client('localhost', $this->testToken, $guzzleClient);
+        $client->getOffenses();
+
+        $all_requests = $plugin->getReceivedRequests();
+        $request = $all_requests[0];
+        
+        $this->assertEquals(
+            'https://localhost/api/siem/offenses',
+            $request->getUrl()
+        );
+
+        $this->assertEquals(
+            'GET',
+            $request->getMethod()
+        );
+    }
+
+    public function testHasCorrectOffenseDetailUri() {
+        $response = $this->response(array());
+        $plugin = new MockPlugin();
+        $plugin->addResponse($response);
+
+        $guzzleClient = new GuzzleClient();
+        $guzzleClient->addSubscriber($plugin);
+
+        $client = new Client('localhost', $this->testToken, $guzzleClient);
+        $client->getOffenseDetail(123);
+
+        $all_requests = $plugin->getReceivedRequests();
+        $request = $all_requests[0];
+        
+        $this->assertEquals(
+            'https://localhost/api/siem/offenses/123',
+            $request->getUrl()
+        );
+
+        $this->assertEquals(
+            'GET',
+            $request->getMethod()
+        );
+    }
+
     public function testClientSetsAuthorizationToken() {
         $response = $this->response(array());
         $client = $this->client($response);
@@ -147,7 +197,7 @@ class ClientTest extends \PHPUnit_Framework_TestCase {
         $guzzleClient = new GuzzleClient();
         $guzzleClient->addSubscriber($plugin);
 
-        $client = new Client($this->testToken, $guzzleClient);
+        $client = new Client('localhost', $this->testToken, $guzzleClient);
         return $client;   
     }
 
