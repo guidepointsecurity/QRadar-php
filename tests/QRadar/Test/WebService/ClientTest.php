@@ -10,6 +10,8 @@ use Guzzle\Plugin\Mock\MockPlugin;
 class ClientTest extends \PHPUnit_Framework_TestCase {
 
 
+    private $testToken = 'abcd-efgh-hijk-lmnop';
+
     public function testGetOffenses() {
         $offenses = array(
             array(
@@ -58,6 +60,18 @@ class ClientTest extends \PHPUnit_Framework_TestCase {
         $this->assertCount(2, $offenses);
         $this->assertInstanceOf('QRadar\Model\Offense', $offenses[0]);
         $this->assertEquals(1, $offenses[0]->id);
+    }
+
+    public function testClientSetsAuthorizationToken() {
+        $response = $this->response(array());
+        $client = $this->client($response);
+        
+        $guzzleClient = $client->getClient();
+                
+        $this->assertTrue($guzzleClient->get('/')->hasHeader('sec'));        
+        
+        $sec_header = $guzzleClient->get('/')->getHeader('sec');
+        $this->assertEquals($this->testToken, $sec_header);
     }
 
     public function testGetOffenseDetail() {
@@ -111,7 +125,7 @@ class ClientTest extends \PHPUnit_Framework_TestCase {
         $guzzleClient = new GuzzleClient();
         $guzzleClient->addSubscriber($plugin);
 
-        $client = new Client($guzzleClient);
+        $client = new Client($this->testToken, $guzzleClient);
         return $client;   
     }
 
